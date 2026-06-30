@@ -71,15 +71,14 @@ This trial was part of the evidence base that informed the **FDA's 2008 black bo
 | `Project2_SAP.docx` | Statistical Analysis Plan: methods, censoring rules, TFL shells, multiplicity considerations |
 | `Project2_Results_Report.docx` | Clinical study results report (CSR-style): Abstract, Methods, Results, Discussion, Conclusions |
 
-### Analysis Scripts (R)
-| File | Description |
-|---|---|
-| `Project2_01_ADSL.R` | ADSL construction: load SAS datasets, derive ITT/Safety/PP flags, merge baseline variables |
-| `Project2_02_ADTTE_OS_Analysis.R` | ADTTE construction, KM analysis, log-rank test, Cox PH model, Table 1, Table 2, subgroup forest plot |
-| `Project2_03b_PPFL_Corrected.R` | Per-Protocol flag derivation (≥2 chemotherapy cycles, no major protocol deviation) |
-| `Project2_05_AE_Final.R` | TEAE safety analysis: AE summary, most frequent TEAEs (≥5%), body system class, cardiac subcategory |
-| `Project2_07_QOL_Corrected.R` | QoL analysis from wide-format A_QOL dataset: FACT-F, FACT-G, HSI, EQ-5D VAS — pivot_longer approach |
-| `Project2_06_QOL_Hgb.R` | Hemoglobin over time analysis from C_HEMAT |
+### Analysis Scripts (R) — Run in Order
+| Order | File | Description |
+|---|---|---|
+| 1 | `Project2_01_ADSL.R` | ADSL construction: load all SAS datasets via haven, derive ITT/Safety/PP population flags, merge baseline demographics and OS endpoint variables into one-row-per-patient subject-level dataset |
+| 2 | `Project2_02_ADTTE_OS_Analysis.R` | ADTTE construction, Kaplan-Meier estimation, log-rank test, Cox PH primary OS analysis, PH assumption check (Schoenfeld residuals), Table 1 baseline characteristics, Table 2 OS results, pre-specified subgroup forest plot |
+| 3 | `Project2_03_PPFL_Sensitivity.R` | Per-Protocol flag derivation (≥2 chemotherapy cycles completed + no major protocol deviation per C_DISP) and PP sensitivity Cox PH analysis |
+| 4 | `Project2_04_AE_Final.R` | TEAE safety analysis: AE summary by severity and SAE status, most frequent TEAEs (≥5% in either arm), body system organ class summary, cardiac/CV subcategory detail |
+| 5 | `Project2_05_QOL_Hgb.R` | QoL analysis from wide-format A_QOL dataset using pivot_longer (FACT-F, FACT-G, HSI, EQ-5D VAS, change from baseline); hemoglobin over time from C_HEMAT |
 
 ### Output Figures
 | File | Description |
@@ -117,7 +116,7 @@ This analysis used de-identified individual patient data from Project Data Spher
 1. Register at projectdatasphere.org (free, requires professional/institutional affiliation)
 2. Request access to study: Amgen Study 20010145 / NCT00119613
 3. Download SAS (.sas7bdat) datasets
-4. Run scripts in order: `01_ADSL.R` → `02_ADTTE_OS_Analysis.R` → `03b_PPFL_Corrected.R` → `05_AE_Final.R` → `07_QOL_Corrected.R`
+4. Run scripts in order: `Project2_01_ADSL.R` → `Project2_02_ADTTE_OS_Analysis.R` → `Project2_03_PPFL_Sensitivity.R` → `Project2_04_AE_Final.R` → `Project2_05_QOL_Hgb.R`
 5. Set your working directory to the folder containing downloaded SAS files before running any script
 
 All scripts use relative paths and require R v4.3.3+ with packages: `haven`, `dplyr`, `tidyr`, `survival`, `survminer`, `ggplot2`, `gtsummary`, `janitor`, `lubridate`
